@@ -7,8 +7,10 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use App\Models\ReportUpload;
 
-class ReportUpload extends Controller
+
+class ReportUploadController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -43,7 +45,20 @@ class ReportUpload extends Controller
         $date = Carbon::today()->format('d-m-Y');
         $path = Storage::putFileAs("public/report/".$date,$request->file('files'),$name_file);
         $link_file = URL::to('/').Storage::url('report/'.$date.'/'.$name_file);
-        return response()->json(['path'=>$path,'downloadLink'=>$link_file]);
+
+        ReportUpload::create([
+            'fileName' => $name_file,
+            'linkFile' => $path,
+            'linkDownFile' => $link_file,
+            'userId' => $request['userId'],
+            'positionId' => $request['positionId'],
+            'departmentId' => $request['departmentId']
+        ]);
+        return response()->json([
+            'fileName'=>$name_file,
+            'downloadLink'=>$link_file,
+            'created_at' => Carbon::now()->format('d-m-Y')
+        ]);
     }
 
     /**

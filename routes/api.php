@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\ReportUpload;
+use App\Http\Controllers\Api\ReportUploadController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,5 +19,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/report/getfile', [ReportUpload::class, 'getFile']);
-Route::post('/report/upload',[ReportUpload::class,'store']);
+Route::get('/report/getfile', [ReportUploadController::class, 'show']);
+Route::post('/report/upload',[ReportUploadController::class,'store']);
