@@ -19,5 +19,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+
+Route::post('/test', function (){
+    \Illuminate\Support\Facades\Storage::makeDirectory('test');
+
+});
 Route::get('/report/getfile', [ReportUploadController::class, 'show']);
 Route::post('/report/upload',[ReportUploadController::class,'store']);
