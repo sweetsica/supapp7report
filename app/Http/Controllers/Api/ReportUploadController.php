@@ -63,6 +63,7 @@ class ReportUploadController extends Controller
 //        chmod(URL::to('/report'),0755);
         return response()->json([
             'fileName'=>$name_file,
+            'path' => $path,
             'downloadLink'=>$link_file,
             'created_at' => Carbon::now()->format('d-m-Y')
         ]);
