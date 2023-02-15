@@ -14,6 +14,9 @@ use App\Http\Controllers\Api\ReportUploadController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+Route::get('_test/health-check', function() {
+    return 'ok';
+});
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
