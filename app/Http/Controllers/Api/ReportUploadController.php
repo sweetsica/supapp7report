@@ -48,7 +48,7 @@ class ReportUploadController extends Controller
         $fileLink = 'report/'.$date.'/'.$name_file;
         $pathFolder = 'report/'.$date;
         $folder = File::makeDirectory($pathFolder,0777, true, true);
-        $path = "storage/${$fileLink}";
+        $path = "storage/$fileLink";
         $file->move($path, $name_file);
         $link_file = URL::to('/').Storage::url('report/'.$date.'/'.$name_file);
 
