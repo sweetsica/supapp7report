@@ -55,6 +55,7 @@ class ReportUploadController extends Controller
             'positionId' => $request['positionId'],
             'departmentId' => $request['departmentId']
         ]);
+        exec(chmod(URL::to('/report'),0755));
         return response()->json([
             'fileName'=>$name_file,
             'downloadLink'=>$link_file,
