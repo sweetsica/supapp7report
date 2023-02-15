@@ -46,7 +46,7 @@ class ReportUploadController extends Controller
 //        $folder = Storage::makeDirectory("public/report/".$date);
         $path = Storage::putFileAs("public/report/".$date,$request->file('files'),$name_file);
 
-        $link_file = URL::to('/').Storage::url('report/'.$date.'/'.$name_file);
+        $link_file = URL::to('/').Storage::url('public/report/'.$date.'/'.$name_file);
 
         ReportUpload::create([
             'fileName' => $name_file,
