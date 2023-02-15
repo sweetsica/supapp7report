@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use App\Models\ReportUpload;
@@ -44,7 +45,7 @@ class ReportUploadController extends Controller
         $name_file = $file->getClientOriginalName();
         $date = Carbon::today()->format('d-m-Y');
 //        $folder = Storage::makeDirectory("public/report/".$date,0777);
-        $folder = Storage::makeDirectory("public/report/testfolder1",0777);
+        $folder = File::makeDirectory("public/report/testfolder1",0777, true);
         dd($folder);
         $path = Storage::putFileAs($folder,$request->file('files'),$name_file);
         $link_file = URL::to('/').Storage::url('report/'.$date.'/'.$name_file);
