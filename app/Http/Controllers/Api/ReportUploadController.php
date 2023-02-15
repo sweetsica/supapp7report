@@ -43,7 +43,9 @@ class ReportUploadController extends Controller
         $file = $request->file('files');
         $name_file = $file->getClientOriginalName();
         $date = Carbon::today()->format('d-m-Y');
-        $folder = Storage::makeDirectory("public/report/".$date);
+//        $folder = Storage::makeDirectory("public/report/".$date,0777);
+        $folder = Storage::makeDirectory("public/report/testfolder1",0777);
+        dd($folder);
         $path = Storage::putFileAs($folder,$request->file('files'),$name_file);
         $link_file = URL::to('/').Storage::url('report/'.$date.'/'.$name_file);
 
@@ -55,7 +57,7 @@ class ReportUploadController extends Controller
             'positionId' => $request['positionId'],
             'departmentId' => $request['departmentId']
         ]);
-        exec(chmod(URL::to('/report'),0755));
+        chmod(URL::to('/report'),0755);
         return response()->json([
             'fileName'=>$name_file,
             'downloadLink'=>$link_file,
