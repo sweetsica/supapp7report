@@ -45,11 +45,11 @@ class ReportUploadController extends Controller
         $date = Carbon::today()->format('d-m-Y');
 //        $folder = Storage::makeDirectory("public/report/".$date,0777);
 //        $path = Storage::putFileAs("storage/report/testfolder2",$request->file('files'),$name_file);
-        $fileLink = 'report/'.$date.'/'.$name_file;
-        $pathFolder = 'report/'.$date;
+        $fileLink = 'storage/report/'.$date.'/'.$name_file;
+        $pathFolder = "storage/report/$date";
         $folder = File::makeDirectory($pathFolder,0777, true, true);
         $path = "storage/$fileLink";
-        $file->move($path, $name_file);
+        $file->move($pathFolder, $name_file);
         $link_file = URL::to('/').Storage::url('report/'.$date.'/'.$name_file);
 
         ReportUpload::create([
