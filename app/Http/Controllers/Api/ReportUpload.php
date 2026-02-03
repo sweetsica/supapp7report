@@ -52,19 +52,24 @@ class ReportUpload extends Controller
                 $file = $file[0];
             }
 
-            $name_file = $file->getClientOriginalName();
+            $original_name = $file->getClientOriginalName();
+            $extension = $file->getClientOriginalExtension();
             $date = Carbon::today()->format('d-m-Y');
 
+            // Generate unique filename: name_timestamp_random.ext
+            $unique_name = pathinfo($original_name, PATHINFO_FILENAME) . '_' . time() . '_' . Str::random(5) . '.' . $extension;
+
             // Save to storage
-            $path = Storage::putFileAs("public/report/" . $date, $file, $name_file);
-            $link_file = URL::to('/') . Storage::url('report/' . $date . '/' . $name_file);
+            $path = Storage::putFileAs("public/report/" . $date, $file, $unique_name);
+            $link_file = URL::to('/') . Storage::url('report/' . $date . '/' . $unique_name);
 
             // Get file type (extension)
-            $type = $file->getClientOriginalExtension();
+            $type = $extension;
 
             // Save to database
             $reportUpload = ReportUploadModel::create([
-                'name' => $name_file,
+                'name' => $unique_name,
+                'original_name' => $original_name,
                 'file_path' => $path,
                 'file_url' => $link_file,
                 'token' => $request->token,
@@ -73,7 +78,9 @@ class ReportUpload extends Controller
 
             return response()->json([
                 'id' => $reportUpload->id,
-                'name' => $reportUpload->name,
+                'name' => $reportUpload->original_name, // User friendly name
+                'original_name' => $reportUpload->original_name,
+                'unique_name' => $reportUpload->name,
                 'file_path' => $reportUpload->file_path,
                 'file_url' => $reportUpload->file_url,
                 'path' => $path, // legacy support

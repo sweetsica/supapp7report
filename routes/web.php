@@ -16,3 +16,13 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/upload', function () {
+    return view('upload');
+})->name('upload');
+
+Route::post('/upload', [App\Http\Controllers\Api\ReportUpload::class, 'store']);
+
+Route::post('/result', function (Illuminate\Http\Request $request) {
+    return view('result', ['files' => $request->get('files', [])]);
+})->name('result');

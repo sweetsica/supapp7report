@@ -11,6 +11,7 @@ class ReportUpload extends Model
 
     protected $fillable = [
         'name',
+        'original_name',
         'file_path',
         'file_url',
         'token',
