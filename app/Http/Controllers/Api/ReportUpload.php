@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\ReportUpload as ReportUploadModel;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 
 class ReportUpload extends Controller
 {
@@ -38,12 +40,57 @@ class ReportUpload extends Controller
      */
     public function store(Request $request)
     {
-        $file = $request->file('files');
-        $name_file = $file->getClientOriginalName();
-        $date = Carbon::today()->format('d-m-Y');
-        $path = Storage::putFileAs("public/report/".$date,$request->file('files'),$name_file);
-        $link_file = URL::to('/').Storage::url('report/'.$date.'/'.$name_file);
-        return response()->json(['path'=>$path,'downloadLink'=>$link_file]);
+        try {
+            if (!$request->hasFile('files')) {
+                return response()->json(['error' => 'No file uploaded under key "files"'], 400);
+            }
+
+            $file = $request->file('files');
+
+            // Handle array of files (if sent as files[])
+            if (is_array($file)) {
+                $file = $file[0];
+            }
+
+            $name_file = $file->getClientOriginalName();
+            $date = Carbon::today()->format('d-m-Y');
+
+            // Save to storage
+            $path = Storage::putFileAs("public/report/" . $date, $file, $name_file);
+            $link_file = URL::to('/') . Storage::url('report/' . $date . '/' . $name_file);
+
+            // Get file type (extension)
+            $type = $file->getClientOriginalExtension();
+
+            // Save to database
+            $reportUpload = ReportUploadModel::create([
+                'name' => $name_file,
+                'file_path' => $path,
+                'file_url' => $link_file,
+                'token' => $request->token,
+                'type' => $type,
+            ]);
+
+            return response()->json([
+                'id' => $reportUpload->id,
+                'name' => $reportUpload->name,
+                'file_path' => $reportUpload->file_path,
+                'file_url' => $reportUpload->file_url,
+                'path' => $path, // legacy support
+                'downloadLink' => $link_file, // legacy support
+                'token' => $reportUpload->token,
+                'type' => $reportUpload->type,
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Upload failed: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            return response()->json(['error' => 'Upload failed: ' . $e->getMessage()], 500);
+        }
+    }
+
+    public function getFile(Request $request)
+    {
+        $link = asset('storage/report/' . $request->path);
+        return response()->json($link);
     }
 
     /**

@@ -8,4 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class ReportUpload extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'file_path',
+        'file_url',
+        'token',
+        'type',
+    ];
 }
