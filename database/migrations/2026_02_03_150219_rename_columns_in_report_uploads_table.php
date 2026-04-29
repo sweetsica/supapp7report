@@ -10,30 +10,55 @@ return new class extends Migration {
      */
     public function up(): void
     {
+        if (!Schema::hasTable('report_uploads')) {
+            return;
+        }
+
         Schema::table('report_uploads', function (Blueprint $table) {
-            $table->renameColumn('file', 'file_path');
-            $table->renameColumn('path', 'file_url');
+            if (Schema::hasColumn('report_uploads', 'file')) {
+                $table->renameColumn('file', 'file_path');
+            }
+
+            if (Schema::hasColumn('report_uploads', 'path')) {
+                $table->renameColumn('path', 'file_url');
+            }
         });
 
         Schema::table('report_uploads', function (Blueprint $table) {
-            $table->string('token')->nullable()->change();
-            $table->string('type')->nullable()->change();
+            if (Schema::hasColumn('report_uploads', 'token')) {
+                $table->string('token')->nullable()->change();
+            }
+
+            if (Schema::hasColumn('report_uploads', 'type')) {
+                $table->string('type')->nullable()->change();
+            }
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
+        if (!Schema::hasTable('report_uploads')) {
+            return;
+        }
+
         Schema::table('report_uploads', function (Blueprint $table) {
-            $table->renameColumn('file_path', 'file');
-            $table->renameColumn('file_url', 'path');
+            if (Schema::hasColumn('report_uploads', 'file_path')) {
+                $table->renameColumn('file_path', 'file');
+            }
+
+            if (Schema::hasColumn('report_uploads', 'file_url')) {
+                $table->renameColumn('file_url', 'path');
+            }
         });
 
         Schema::table('report_uploads', function (Blueprint $table) {
-            $table->string('token')->nullable(false)->change();
-            $table->string('type')->nullable(false)->change();
+            if (Schema::hasColumn('report_uploads', 'token')) {
+                $table->string('token')->nullable(false)->change();
+            }
+
+            if (Schema::hasColumn('report_uploads', 'type')) {
+                $table->string('type')->nullable(false)->change();
+            }
         });
     }
 };
