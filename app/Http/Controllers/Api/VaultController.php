@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Models\ReportUpload as ReportUploadModel;
+use App\Models\Vault;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 
-class ReportUpload extends Controller
+class VaultController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -61,14 +61,14 @@ class ReportUpload extends Controller
             $unique_name = pathinfo($original_name, PATHINFO_FILENAME) . '_' . time() . '_' . Str::random(5) . '.' . $extension;
 
             // Save to storage
-            $path = Storage::putFileAs("public/report/" . $date, $file, $unique_name);
-            $link_file = URL::to('/') . Storage::url('report/' . $date . '/' . $unique_name);
+            $path = Storage::putFileAs("public/vault/" . $date, $file, $unique_name);
+            $link_file = URL::to('/') . Storage::url('vault/' . $date . '/' . $unique_name);
 
             // Get file type (extension)
             $type = $extension;
 
             // Save to database
-            $reportUpload = ReportUploadModel::create([
+            $vault = Vault::create([
                 'name' => $unique_name,
                 'original_name' => $original_name,
                 'file_path' => $path,
@@ -79,16 +79,16 @@ class ReportUpload extends Controller
             ]);
 
             return response()->json([
-                'id' => $reportUpload->id,
-                'name' => $reportUpload->original_name, // User friendly name
-                'original_name' => $reportUpload->original_name,
-                'unique_name' => $reportUpload->name,
-                'file_path' => $reportUpload->file_path,
-                'file_url' => $reportUpload->file_url,
+                'id' => $vault->id,
+                'name' => $vault->original_name, // User friendly name
+                'original_name' => $vault->original_name,
+                'unique_name' => $vault->name,
+                'file_path' => $vault->file_path,
+                'file_url' => $vault->file_url,
                 'path' => $path, // legacy support
                 'downloadLink' => $link_file, // legacy support
-                'token' => $reportUpload->token,
-                'type' => $reportUpload->type,
+                'token' => $vault->token,
+                'type' => $vault->type,
             ]);
         } catch (\Exception $e) {
             \Log::error('Upload failed: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
@@ -98,7 +98,7 @@ class ReportUpload extends Controller
 
     public function getFile(Request $request)
     {
-        $link = asset('storage/report/' . $request->path);
+        $link = asset('storage/vault/' . $request->path);
         return response()->json($link);
     }
 

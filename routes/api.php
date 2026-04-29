@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\ReportUpload;
+use App\Http\Controllers\Api\VaultController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,5 +19,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/report/getfile', [ReportUpload::class, 'getFile']);
-Route::post('/report/upload',[ReportUpload::class,'store']);
+Route::get('/vault/getfile', [VaultController::class, 'getFile']);
+Route::post('/vault/upload', [VaultController::class, 'store']);
